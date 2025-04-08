@@ -5,7 +5,7 @@ set -e
 set -o pipefail
 
 # --- Node Exporter (Systemd) 配置 ---
-NODE_EXPORTER_VERSION="1.3.1" # 可以根据需要更新版本
+NODE_EXPORTER_VERSION="1.9.1" # 可以根据需要更新版本
 NODE_EXPORTER_BIN="/usr/local/bin/node_exporter"
 NODE_EXPORTER_SERVICE_FILE="/etc/systemd/system/node_exporter.service"
 NODE_EXPORTER_TEXTFILE_DIR="/var/lib/node_exporter/textfile_collector" # Textfile collector 目录
@@ -148,7 +148,7 @@ get_os_info() {
 # 检查并安装 Docker
 check_install_docker() {
     log_info "检查 Docker 是否已安装..."
-    if command_exists docker; then
+    if command -v docker >/dev/null 2>&1; then
         log_info "Docker 已安装。"
         # 检查 Docker 服务是否运行
         if ! docker info > /dev/null 2>&1; then
@@ -184,7 +184,7 @@ check_install_docker() {
 
     # 再次检查 Docker 是否安装成功
     log_info "再次检查 Docker 是否安装成功..."
-    if ! command_exists docker; then
+    if ! command -v docker >/dev/null 2>&1; then
         log_error "Docker 安装后仍然无法检测到 'docker' 命令。请检查安装日志或手动安装。"
         exit 1
     fi
@@ -350,7 +350,6 @@ ExecStart=$NODE_EXPORTER_BIN \\
   --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc|run/user|run/lock|var/lib/docker/.+|snap/.+|var/snap/.+|mnt/.+)($$|/)" \\
   --collector.filesystem.ignored-fs-types="^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tmpfs|tracefs|xfs)$" \\
   --collector.netclass.ignored-devices="^(lo|veth.*|docker0|virbr.*|kube-ipvs.*)$" \\
-  --collector.netdev.ignored-devices="^(lo|veth.*|docker0|virbr.*|kube-ipvs.*)$" \\
   --collector.textfile.directory="$NODE_EXPORTER_TEXTFILE_DIR" \\
   --web.listen-address=":9100" \\
   --web.config.file="$web_config_abs_path"
@@ -866,19 +865,10 @@ if [[ "$install_node" == true ]]; then
     log_info "临时文件已清理。"
 
     # 7. 确定服务运行用户/组
-    NOGROUP_USER="nobody"
-    NOGROUP_GROUP="nogroup"
-    if ! getent group nogroup >/dev/null 2>&1; then
-        if getent group nobody >/dev/null 2>&1; then
-            NOGROUP_GROUP="nobody"
-            log_warn "找不到 'nogroup' 组，将使用 'nobody' 组。"
-        else
-            log_error "找不到 'nogroup' 或 'nobody' 组。无法设置服务用户/组。"
-            exit 1
-        fi
-    fi
+    NOGROUP_USER="root"
+    NOGROUP_GROUP="root"
     log_info "将使用用户 '$NOGROUP_USER' 和组 '$NOGROUP_GROUP' 运行 Node Exporter 服务。"
-    log_warn "注意：使用非 root 用户可能导致某些系统指标无法收集。"
+    log_info "使用 root 用户可以确保收集所有系统指标。"
 
     # 8. 创建 systemd 服务文件 (传入 web config 绝对路径)
     log_info "创建 Node Exporter systemd 服务文件"
