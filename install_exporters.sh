@@ -321,7 +321,7 @@ basic_auth_users:
   $user: '$hash'
 EOF
   # 设置文件权限 (例如，root 可读写，其他人不可访问)
-  chmod 600 "$target_file"
+  chmod 644 "$target_file"
   log_info "$target_file 创建成功。"
 }
 
