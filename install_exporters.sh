@@ -444,6 +444,18 @@ EOF
       - '--config.file=/config.yml'
       # 添加 web 认证配置，保护 /metrics 和 /probe 端点
       - '--web.config.file=/etc/smokeping_prober/web-config.yml'
+    networks:
+      - monitoring-network
+      
+networks:
+  monitoring-network:
+    driver: bridge
+    name: monitoring-network
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: fd01::/80    
+          gateway: fd01::1    
 
 EOF
     fi
