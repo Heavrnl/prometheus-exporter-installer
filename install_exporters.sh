@@ -431,9 +431,6 @@ EOF
     image: quay.io/superq/smokeping-prober:latest
     container_name: smokeping_prober
     restart: unless-stopped
-    # fping 需要 NET_RAW 权限来发送 ICMP 包
-    cap_add:
-      - NET_RAW
     volumes:
       - ./$SMOKEPING_PROBER_CONFIG_FILE_REL:/config.yml:ro
       # Smokeping Prober 也使用相同的 web-config.yml 进行认证
