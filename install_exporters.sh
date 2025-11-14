@@ -29,12 +29,12 @@ SMOKEPING_PROBER_CONFIG_FILE_ABS="$WORK_DIR/$SMOKEPING_PROBER_CONFIG_FILE_REL" #
 DEFAULT_SMOKEPING_PROBER_CONFIG=$(cat <<'EOF'
 targets:
   - hosts:
-      - 157.148.58.29
-      - 120.233.18.250
-      - 183.47.126.35
-      - 240e:97c:2f:3000::44
-      - 2409:8c54:871:1001::12
-      - 2408:8756:f50:1001::c
+      - gd-cm-v4.ip.zstaticcdn.com
+      - gd-cu-v4.ip.zstaticcdn.com
+      - gd-ct-v4.ip.zstaticcdn.com
+      - gd-cm-v6.ip.zstaticcdn.com
+      - gd-cu-v6.ip.zstaticcdn.com
+      - gd-ct-v6.ip.zstaticcdn.com
     interval: 1s      # 探测间隔
     network: ip       # ip / ip4 / ip6
     protocol: icmp    # 探测协议
