@@ -29,7 +29,7 @@ SMOKEPING_PROBER_CONFIG_FILE_ABS="$WORK_DIR/$SMOKEPING_PROBER_CONFIG_FILE_REL" #
 DEFAULT_SMOKEPING_PROBER_CONFIG=$(cat <<'EOF'
 targets:
   - hosts:
-      - gd-cm-v4.ip.zstaticcdn.com
+      - v4-gd-cu.oojj.de
       - gd-cu-v4.ip.zstaticcdn.com
       - gd-ct-v4.ip.zstaticcdn.com
       - gd-cm-v6.ip.zstaticcdn.com
