@@ -29,16 +29,18 @@ SMOKEPING_PROBER_CONFIG_FILE_ABS="$WORK_DIR/$SMOKEPING_PROBER_CONFIG_FILE_REL" #
 DEFAULT_SMOKEPING_PROBER_CONFIG=$(cat <<'EOF'
 targets:
   - hosts:
-      - v4-gd-cu.oojj.de
-      - gd-cu-v4.ip.zstaticcdn.com
-      - gd-ct-v4.ip.zstaticcdn.com
-      - gd-cm-v6.ip.zstaticcdn.com
-      - gd-cu-v6.ip.zstaticcdn.com
-      - gd-ct-v6.ip.zstaticcdn.com
+      - gd-guangzhou-cm-v4.ip.zstaticcdn.com
+      - gd-guangzhou-ct-v4.ip.zstaticcdn.com
+      - gd-guangzhou-cu-v4.ip.zstaticcdn.com
+      - gd-cm-v6.ip.zstaticcdn.com:80
+      - gd-cu-v6.ip.zstaticcdn.com:80
+      - gd-ct-v6.ip.zstaticcdn.com:80
     interval: 1s      # 探测间隔
     network: ip       # ip / ip4 / ip6
-    protocol: icmp    # 探测协议
+    port: 443
+    protocol: tcp    # 探测协议
     size: 56          # 包大小
+
 EOF
 )
 
@@ -400,7 +402,6 @@ create_probers_compose_config() {
     cat <<EOF > "$target_file"
 # docker-compose.yml for Prober Exporters
 # 由脚本自动生成
-version: '3.7'
 
 services:
 EOF
@@ -431,7 +432,7 @@ EOF
         log_info "向 docker-compose.yml 添加 smokeping_prober..."
         cat <<EOF >> "$target_file"
   smokeping_prober:
-    image: quay.io/superq/smokeping-prober:latest
+    image: heavrnl/smokeping-prober:latest
     container_name: smokeping_prober
     restart: unless-stopped
     volumes:
